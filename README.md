@@ -22,11 +22,16 @@ I played a little with the k-value on a limited set of 10,000 train images and 2
 and decided to go with k = 5 for the full-size test. The results obtained are as follows (error rates):
 
 10k/2k:
-.207 for k=50
-.178 for k=9
-.1775 for k=5
-.1805 for k=3
-.1925 for k=1
+
+0.207 for k=50
+
+0.178 for k=9
+
+0.1775 for k=5
+
+0.1805 for k=3
+
+0.1925 for k=1
 
 And for the full size test:
 
@@ -38,4 +43,5 @@ That corresponds to the official benchmark, so it seems to work just fine.
 
 Everything can be run by running the main.py file. Tensorflow/Kreas, numpy and matplotlib libraries
 are needed. I used Python 3.7 Anaconda distribution. The fashion-mnist set is included with tensorflow, 
-so no additional downloading is necessary, as it is automatic.
+so no additional downloading is necessary, as it is automatic. KNN model can't be downloaded, 
+as it requires specific test data.
