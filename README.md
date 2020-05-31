@@ -5,39 +5,42 @@ The fashion-mnist dataset is used.
 
 # Methods
 
+## Testing previous models
+
 Choosing from the models implemented during previous classes I've decided to use
 a KNN classifier, which should perform well on an image recognition task.
 It can be found in the knn.py file. I had to modify the distance function so that it fits
-new data - it's a simple Euclidean distance function, the weights are uniform. There's no image preprocessing, 
-they are treated as 28^2 vectors and supplied to the distance function in this format.
+new data - it's a simple Euclidean distance function, the weights are uniform. There's no image 
+preprocessing/feature extraction apart from normalization, 
+they are treated as 28x28 matrices and supplied to the distance function in this format.
 The model is similar to the model from the benchmark site:
 
 KNeighborsClassifier {"n_neighbors":5,"p":2,"weights":"uniform"}, accuracy: 0.851  
 
 # Results
 
-KNN
+## KNN
 
-I played a little with the k-value on a limited set of 10,000 train images and 2,000 test images
-and decided to go with k = 5 for the full-size test. The results obtained are as follows (error rates):
+I tested the k-value on a limited set of 10,000 train images and 2,000 validation images
+and decided to go with k = 5 for the full-size test (actually half-size, because neither my laptop, nor Google Colab could handle it). The results obtained are as follows (accuracy):
 
-10k/2k:
+10k train/2k validation:
 
-0.207 for k=50
+- 0.793 for k=50
 
-0.178 for k=9
+- 0.822 for k=9
 
-0.1775 for k=5
+- 0.823 for k=5
 
-0.1805 for k=3
+- 0.820 for k=3
 
-0.1925 for k=1
+- 0.808 for k=1
 
-And for the full size test:
+And for the 30k train/5k test:
 
-.
+- 0.839 for k=5
 
-That corresponds to the official benchmark, so it seems to work just fine.
+That corresponds to the official benchmark (0.851 accuracy, trained on a full set), so it seems to work just fine.
 
 # Usage 
 

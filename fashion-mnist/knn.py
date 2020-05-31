@@ -6,7 +6,7 @@ fashion_mnist = keras.datasets.fashion_mnist
 
 
 def distance_function(X, X_train):
-    return np.array([[np.linalg.norm(test_o-train_o) for train_o in X_train] for test_o in X])
+    return np.array([[np.linalg.norm(test_o - train_o) for train_o in X_train] for test_o in X])
 
 
 def sort_train_labels_knn(Dist, y):
@@ -41,21 +41,20 @@ def knn_on_fashion_mnist():
     train_images = train_images / 255.0
     test_images = test_images / 255.0
 
-    train_set = train_images[:1000, :]
-    train_set_labels = train_labels[:1000]
-    val_set = train_images[1000:1200, :]
-    val_set_labels = train_labels[1000:1200]
-    test_set = test_images[:200, :]
-    test_set_labels = test_labels[:200]
+    train_set = train_images[:10000, :]
+    train_set_labels = train_labels[:10000]
+    val_set = train_images[10000:12000, :]
+    val_set_labels = train_labels[10000:12000]
 
-    models, best_k = knn_model_selection(val_set, train_set, val_set_labels, train_set_labels, [1, 5, 9])
+    test_set_half = test_images[:5000, :]
+    test_set_half_labels = test_labels[:5000]
+    train_set_half = train_images[:30000, :]
+    train_set_half_labels = train_labels[:30000]
 
-    print(models)
-    print(knn_test(train_set, test_set, train_set_labels, test_set_labels, best_k))
+    # models, best_k = knn_model_selection(val_set, train_set, val_set_labels, train_set_labels, [1, 5, 9])
 
+    # print(models)
+    # print(knn_test(train_set, test_set, train_set_labels, test_set_labels, best_k))
 
-# res 10/2k for val set
-# {1: 0.1845, 3: 0.17, 5: 0.1615, 9: 0.1685, 20: 0.183, 50: 0.2065}
-# res for test set 0.1775
-
-# TODO update readme!
+    # full test:
+    print(knn_test(train_set_half, test_set_half, train_set_half_labels, test_set_half_labels, 5))
