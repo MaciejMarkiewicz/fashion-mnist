@@ -35,7 +35,7 @@ def knn_test(X_train, X_test, y_train, y_test, k):
     return classification_error(p_y_x_knn(labels, k), y_test)
 
 
-def knn_on_fashion_mnist():
+def run_training():
     (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
 
     train_images = train_images / 255.0
