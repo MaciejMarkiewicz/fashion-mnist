@@ -44,16 +44,16 @@ def plot_value_array(i, predictions_array, true_label):
 def run_training():
     (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
 
-    x_train = (train_images / 255.0).astype('float32').reshape(60000, 28, 28, 1)
+    x_train_full = (train_images / 255.0).astype('float32').reshape(60000, 28, 28, 1)
     x_test = (test_images / 255.0).astype('float32').reshape(10000, 28, 28, 1)
 
-    y_train = keras.utils.to_categorical(train_labels)
+    y_train_full = keras.utils.to_categorical(train_labels)
     y_test = keras.utils.to_categorical(test_labels)
 
-    x_train = x_train[:50000, ]
-    x_val = x_test[:10000, ]
-    y_train = y_train[:50000, ]
-    y_val = y_test[:10000, ]
+    x_train = x_train_full[:50000, ]
+    x_val = x_train_full[50000:60000, ]
+    y_train = y_train_full[:50000]
+    y_val = y_train_full[50000:60000]
 
     model = tf.keras.models.Sequential([
         tf.keras.layers.Conv2D(32, (5, 5), activation='relu', input_shape=(28, 28, 1)),
@@ -64,7 +64,7 @@ def run_training():
 
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dropout(0.25),
-        tf.keras.layers.Dense(512, activation='relu'),
+        tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dropout(0.25),
         tf.keras.layers.Dense(NUMBER_OF_CLASSES, activation='softmax')
     ])
