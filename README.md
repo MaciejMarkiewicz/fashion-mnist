@@ -3,9 +3,9 @@
 This repository contains a couple of ML models trained for image recognition. 
 The fashion-mnist dataset is used. 
 
-# Methods
+# Methods 
 
-## Testing previous models
+## Testing previous models - KNN
 
 Choosing from the models implemented during previous classes I've decided to use
 a KNN classifier, which should perform well on an image recognition task.
@@ -17,14 +17,7 @@ This model is similar to the model from the benchmark site:
 
 KNeighborsClassifier {"n_neighbors":5,"p":2,"weights":"uniform"}, accuracy: 0.851  
 
-## Better model
-
-For my go-to model I've chosen a convolutional neural network, which is also well suited for an image 
-classification task. 
-
-# Results
-
-## KNN
+### Results
 
 I tested the k-value on a limited set of 10,000 train images and 2,000 validation images
 and decided to go with k = 5 for the full-size test (actually half-size, because neither my laptop, nor Google Colab could handle it). 
@@ -48,9 +41,20 @@ And for the 30k train/5k test:
 
 That corresponds to the official benchmark (0.851 accuracy when using a full set), so it seems to work just fine.
 
-## CNN
+## Better model - CNN
 
-THe results obtained for the network are better, than KNN. Training time is significantly shorter as well.
+For my go-to model I've chosen a convolutional neural network, which is also well suited for an image 
+classification task. I started with a simple structure of 2 convolution layers and one dense layer. The training 
+set was divided into a 50,000 training set and a 10,000 validation set. Inspired by a paper [] on a cnn used 
+for the original mnist dataset I tried a similar architecture (at first without augmentation) - 5 features on the 1st convolution, 50 on 2nd,
+100 hidden units. After 100 epochs of training the model achieved 99,5% accuracy on the training set, but only
+89% on the validation set. In fact the maximum accuracy (on validation set) was obtained just after 10 epochs
+and it didn't change much after. I had to change my approach to prevent overfitting, so I increased the number of parameters, 
+decreased training time and added dropout layers. New model's accuracy was about 91,3%.
+
+### Results
+
+THe results obtained for the network are better, than for KNN. Training time is significantly shorter as well.
 For the current version tests for the 10k train set tested on 2k test set give accuracy:
 
 - 0.915 on the training set

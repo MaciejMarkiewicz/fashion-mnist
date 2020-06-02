@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow import keras
+import time
 
 NUMBER_OF_CLASSES = 10
 fashion_mnist = keras.datasets.fashion_mnist
@@ -49,30 +50,35 @@ def run_training():
     y_train = keras.utils.to_categorical(train_labels)
     y_test = keras.utils.to_categorical(test_labels)
 
-    x_train = x_train[:10000, ]
-    x_test = x_test[:2000, ]
-    y_train = y_train[:10000, ]
-    y_test = y_test[:2000, ]
+    x_train = x_train[:50000, ]
+    x_val = x_test[:10000, ]
+    y_train = y_train[:50000, ]
+    y_val = y_test[:10000, ]
 
     model = tf.keras.models.Sequential([
-        tf.keras.layers.Conv2D(64, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+        tf.keras.layers.Conv2D(32, (5, 5), activation='relu', input_shape=(28, 28, 1)),
         tf.keras.layers.MaxPooling2D(2, 2),
 
         tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
         tf.keras.layers.MaxPooling2D(2, 2),
 
         tf.keras.layers.Flatten(),
-        tf.keras.layers.Dropout(0.5),
-
-        tf.keras.layers.Dense(256, activation='relu'),
+        tf.keras.layers.Dropout(0.25),
+        tf.keras.layers.Dense(512, activation='relu'),
+        tf.keras.layers.Dropout(0.25),
         tf.keras.layers.Dense(NUMBER_OF_CLASSES, activation='softmax')
     ])
 
     model.summary()
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    model.fit(x_train, y_train, epochs=10)
 
-    model.evaluate(x_test, y_test, verbose=2)
+    start_time = time.time()
+    model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10)
+    training_time = int(time.time() - start_time)
+
+    print('Training time [s]:', training_time)
+
+    # model.evaluate(x_test, y_test, verbose=2)
 
     # model.save("fashion_mnist_conv_net")
 
