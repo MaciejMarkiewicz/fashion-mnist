@@ -1,8 +1,6 @@
 import numpy as np
-from tensorflow import keras
 
 NUMBER_OF_CLASSES = 10
-fashion_mnist = keras.datasets.fashion_mnist
 
 
 def distance_function(X, X_train):
@@ -35,8 +33,7 @@ def knn_test(X_train, X_test, y_train, y_test, k):
     return classification_error(p_y_x_knn(labels, k), y_test)
 
 
-def run_training():
-    (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+def run_training(train_images, train_labels, test_images, test_labels):
 
     train_images = train_images / 255.0
     test_images = test_images / 255.0
@@ -52,9 +49,7 @@ def run_training():
     train_set_half_labels = train_labels[:30000]
 
     # models, best_k = knn_model_selection(val_set, train_set, val_set_labels, train_set_labels, [1, 5, 9])
-
     # print(models)
-    # print(knn_test(train_set, test_set, train_set_labels, test_set_labels, best_k))
 
     # full test:
     print(knn_test(train_set_half, test_set_half, train_set_half_labels, test_set_half_labels, 5))

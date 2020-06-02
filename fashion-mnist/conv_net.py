@@ -41,11 +41,10 @@ def plot_value_array(i, predictions_array, true_label):
     thisplot[true_label].set_color('blue')
 
 
-def run_training():
-    (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+def run_training(train_images, train_labels, test_images, test_labels):
 
-    x_train_full = (train_images / 255.0).astype('float32').reshape(60000, 28, 28, 1)
-    x_test = (test_images / 255.0).astype('float32').reshape(10000, 28, 28, 1)
+    x_train_full = (train_images / 255.0).reshape(60000, 28, 28, 1)
+    x_test = (test_images / 255.0).reshape(10000, 28, 28, 1)
 
     y_train_full = keras.utils.to_categorical(train_labels)
     y_test = keras.utils.to_categorical(test_labels)
