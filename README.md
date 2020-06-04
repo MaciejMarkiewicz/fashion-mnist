@@ -50,7 +50,8 @@ for the original mnist dataset I tried a similar architecture (at first without 
 100 hidden units. After 100 epochs of training the model achieved 99,5% accuracy on the training set, but only
 89% on the validation set. In fact the maximum accuracy (on validation set) was obtained just after 10 epochs
 and it didn't change much after. I had to change my approach to prevent overfitting, so I increased the number of parameters, 
-decreased training time and added dropout layers. New model's accuracy was about 91,3%.
+decreased training time and added dropout layers. Then i was performing tests in order to minimize the number of 
+parameters if they didn't increase accuracy on the validation set. The final architecture looks like this:
 
 ### Results
 

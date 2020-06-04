@@ -43,22 +43,22 @@ def plot_value_array(i, predictions_array, true_label):
 
 def run_training(train_images, train_labels, test_images, test_labels):
 
-    x_train_full = (train_images / 255.0).reshape(60000, 28, 28, 1)
-    x_test = (test_images / 255.0).reshape(10000, 28, 28, 1)
+    x_train_full = train_images
+    x_test = test_images
 
-    y_train_full = keras.utils.to_categorical(train_labels)
-    y_test = keras.utils.to_categorical(test_labels)
+    y_train_full = train_labels
+    y_test = test_labels
 
-    x_train = x_train_full[:50000, ]
-    x_val = x_train_full[50000:60000, ]
-    y_train = y_train_full[:50000]
-    y_val = y_train_full[50000:60000]
+    x_train = x_train_full[:2500]
+    x_val = x_train_full[2500:3000]
+    y_train = y_train_full[:2500]
+    y_val = y_train_full[2500:3000]
 
     model = tf.keras.models.Sequential([
         tf.keras.layers.Conv2D(32, (5, 5), activation='relu', input_shape=(28, 28, 1)),
         tf.keras.layers.MaxPooling2D(2, 2),
 
-        tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+        tf.keras.layers.Conv2D(64, (5, 5), activation='relu'),
         tf.keras.layers.MaxPooling2D(2, 2),
 
         tf.keras.layers.Flatten(),
@@ -72,7 +72,11 @@ def run_training(train_images, train_labels, test_images, test_labels):
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     start_time = time.time()
-    model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=10)
+    model.fit(x_train, y_train,
+              validation_data=(x_val, y_val),
+              batch_size=256,
+              epochs=10
+              )
     training_time = int(time.time() - start_time)
 
     print('Training time [s]:', training_time)
@@ -83,16 +87,3 @@ def run_training(train_images, train_labels, test_images, test_labels):
 
     predictions = model.predict(x_test)
 
-    num_rows = 5
-    num_cols = 3
-    offset = 68
-    num_images = num_rows * num_cols
-    plt.figure(figsize=(2 * 2 * num_cols, 2 * num_rows))
-
-    for i in range(num_images):
-        plt.subplot(num_rows, 2 * num_cols, 2 * i + 1)
-        plot_image(i + offset, predictions, test_labels, test_images)
-        plt.subplot(num_rows, 2 * num_cols, 2 * i + 2)
-        plot_value_array(i + offset, predictions, test_labels)
-    plt.tight_layout()
-    plt.show()
