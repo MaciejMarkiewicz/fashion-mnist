@@ -2,6 +2,7 @@ import numpy as np
 from scipy.ndimage.filters import gaussian_filter
 from scipy.ndimage.interpolation import map_coordinates
 from tensorflow import keras
+import random
 
 
 def elastic_transform(image, alpha_range, sigma, random_state=None):
@@ -28,6 +29,7 @@ def data_generator():
         width_shift_range=0,
         height_shift_range=0,
         zoom_range=0.0,
+        horizontal_flip=True,
         preprocessing_function=lambda image: elastic_transform(image, alpha_range=8, sigma=3)
     )
 
@@ -47,20 +49,22 @@ def image_augmentation(image, datagen, number_of_augmentations):
 def preprocess_data(train_images, train_labels, test_images, test_labels):
     datagen = data_generator()
 
-    preprocessed_x = []
-    preprocessed_y = []
+    preprocessed = []
 
     for image, label in zip(train_images, train_labels):
         augmented_images = image_augmentation(image, datagen, 2)
 
         for aug_image in augmented_images:
-            preprocessed_x.append(aug_image.reshape(28, 28, 1))
-            preprocessed_y.append(label)
+            preprocessed.append((aug_image.reshape(28, 28, 1), label))
 
-        preprocessed_x.append(image.reshape(28, 28, 1))
-        preprocessed_y.append(label)
+        preprocessed.append((image.reshape(28, 28, 1), label))
 
+    random.shuffle(preprocessed)
+    preprocessed = list(zip(*preprocessed))
+
+    preprocessed_x, preprocessed_y = list(preprocessed[0]), list(preprocessed[1])
     preprocessed_x = np.array(preprocessed_x) / 255
+
     test_images = (test_images / 255).reshape(len(test_images), 28, 28, 1)
 
     return preprocessed_x, keras.utils.to_categorical(preprocessed_y), test_images, \

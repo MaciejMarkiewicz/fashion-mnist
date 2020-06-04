@@ -49,33 +49,35 @@ def run_training(train_images, train_labels, test_images, test_labels):
     y_train_full = train_labels
     y_test = test_labels
 
-    x_train = x_train_full[:2500]
-    x_val = x_train_full[2500:3000]
-    y_train = y_train_full[:2500]
-    y_val = y_train_full[2500:3000]
+    x_train = x_train_full[:150000]
+    x_val = x_train_full[150000:180000]
+    y_train = y_train_full[:150000]
+    y_val = y_train_full[150000:180000]
 
     model = tf.keras.models.Sequential([
-        tf.keras.layers.Conv2D(32, (5, 5), activation='relu', input_shape=(28, 28, 1)),
-        tf.keras.layers.MaxPooling2D(2, 2),
+        tf.keras.layers.InputLayer(input_shape=(28, 28, 1)),
+        tf.keras.layers.BatchNormalization(),
 
+        tf.keras.layers.Conv2D(64, (5, 5), activation='relu'),
+        tf.keras.layers.MaxPooling2D(2, 2),
+        tf.keras.layers.Dropout(0.25),
         tf.keras.layers.Conv2D(64, (5, 5), activation='relu'),
         tf.keras.layers.MaxPooling2D(2, 2),
 
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dropout(0.25),
         tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dropout(0.25),
         tf.keras.layers.Dense(NUMBER_OF_CLASSES, activation='softmax')
     ])
 
     model.summary()
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
     start_time = time.time()
     model.fit(x_train, y_train,
               validation_data=(x_val, y_val),
-              batch_size=256,
-              epochs=10
+              batch_size=384,
+              epochs=150
               )
     training_time = int(time.time() - start_time)
 
@@ -84,6 +86,4 @@ def run_training(train_images, train_labels, test_images, test_labels):
     # model.evaluate(x_test, y_test, verbose=2)
 
     # model.save("fashion_mnist_conv_net")
-
-    predictions = model.predict(x_test)
 
