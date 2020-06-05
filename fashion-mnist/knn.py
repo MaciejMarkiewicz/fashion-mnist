@@ -3,12 +3,12 @@ import numpy as np
 NUMBER_OF_CLASSES = 10
 
 
-def distance_function(X, X_train):
-    return np.array([[np.linalg.norm(test_o - train_o) for train_o in X_train] for test_o in X])
+def distance_function(x, x_train):
+    return np.array([[np.linalg.norm(test_o - train_o) for train_o in x_train] for test_o in x])
 
 
-def sort_train_labels_knn(Dist, y):
-    return y[np.argsort(Dist)]
+def sort_train_labels_knn(distance, labels):
+    return labels[np.argsort(distance)]
 
 
 def p_y_x_knn(y, k):
@@ -20,16 +20,16 @@ def classification_error(p_y_x, y_true):
     return sum(y_pred[i] != y_true[i] for i in range(y_true.shape[0])) / len(y_true)
 
 
-def knn_model_selection(X_val, X_train, y_val, y_train, k_values):
-    labels = sort_train_labels_knn(distance_function(X_val, X_train), y_train)
+def knn_model_selection(x_val, x_train, y_val, y_train, k_values):
+    labels = sort_train_labels_knn(distance_function(x_val, x_train), y_train)
     prediction = [p_y_x_knn(labels, k) for k in k_values]
     errors = [classification_error(pred, y_val) for pred in prediction]
     min_error_index = np.argmin(errors)
     return dict(zip(k_values, errors)), k_values[min_error_index]
 
 
-def knn_test(X_train, X_test, y_train, y_test, k):
-    labels = sort_train_labels_knn(distance_function(X_test, X_train), y_train)
+def knn_test(x_train, x_test, y_train, y_test, k):
+    labels = sort_train_labels_knn(distance_function(x_test, x_train), y_train)
     return classification_error(p_y_x_knn(labels, k), y_test)
 
 

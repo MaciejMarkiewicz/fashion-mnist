@@ -1,13 +1,16 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.ndimage.filters import gaussian_filter
 from scipy.ndimage.interpolation import map_coordinates
 from tensorflow import keras
 import random
 
+NUMBER_OF_AUGMENTATIONS = 3
+TRAIN_SET_SIZE = 50000
 
-def elastic_transform(image, alpha_range, sigma, random_state=None):
-    if random_state is None:
-        random_state = np.random.RandomState(None)
+
+def elastic_transform(image, alpha_range, sigma):
+    random_state = np.random.RandomState(None)
 
     if np.isscalar(alpha_range):
         alpha = alpha_range
@@ -49,23 +52,34 @@ def image_augmentation(image, datagen, number_of_augmentations):
 def preprocess_data(train_images, train_labels, test_images, test_labels):
     datagen = data_generator()
 
+    val_images = train_images[TRAIN_SET_SIZE:]
+    val_labels = train_labels[TRAIN_SET_SIZE:]
+
     preprocessed = []
 
-    for image, label in zip(train_images, train_labels):
-        augmented_images = image_augmentation(image, datagen, 2)
-
+    i = 0
+    for image, label in zip(train_images[:TRAIN_SET_SIZE], train_labels[:TRAIN_SET_SIZE]):
+        augmented_images = image_augmentation(image, datagen, NUMBER_OF_AUGMENTATIONS)
+        i += 1
         for aug_image in augmented_images:
             preprocessed.append((aug_image.reshape(28, 28, 1), label))
-
+            if i == 13:
+                plt.imshow(aug_image.reshape(28, 28))
+                plt.show()
+        if i == 13:
+            plt.imshow(image.reshape(28, 28))
+            plt.show()
         preprocessed.append((image.reshape(28, 28, 1), label))
 
     random.shuffle(preprocessed)
-    preprocessed = list(zip(*preprocessed))
 
+    preprocessed = list(zip(*preprocessed))
     preprocessed_x, preprocessed_y = list(preprocessed[0]), list(preprocessed[1])
     preprocessed_x = np.array(preprocessed_x) / 255
 
     test_images = (test_images / 255).reshape(len(test_images), 28, 28, 1)
+    val_images = (val_images / 255).reshape(len(val_images), 28, 28, 1)
 
-    return preprocessed_x, keras.utils.to_categorical(preprocessed_y), test_images, \
-           keras.utils.to_categorical(test_labels)
+    return preprocessed_x, keras.utils.to_categorical(preprocessed_y), \
+            val_images, keras.utils.to_categorical(val_labels), \
+            test_images, keras.utils.to_categorical(test_labels),

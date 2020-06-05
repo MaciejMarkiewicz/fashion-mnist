@@ -2,88 +2,53 @@ import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow import keras
-import time
 
 NUMBER_OF_CLASSES = 10
-fashion_mnist = keras.datasets.fashion_mnist
+BATCH_SIZE = 512
+EPOCHS = 150
 class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 
 
-def plot_image(i, predictions_array, true_label, img):
-    predictions_array, true_label, img = predictions_array[i], true_label[i], img[i]
-    plt.grid(False)
-    plt.xticks([])
-    plt.yticks([])
+def run_training(train_images, train_labels, val_images, val_labels, test_images, test_labels):
 
-    plt.imshow(img, cmap=plt.cm.binary)
-
-    predicted_label = np.argmax(predictions_array)
-    if predicted_label == true_label:
-        color = 'blue'
-    else:
-        color = 'red'
-
-    plt.xlabel("{} {:2.0f}% ({})".format(class_names[predicted_label],
-                                         100 * np.max(predictions_array),
-                                         class_names[true_label]), color=color)
-
-
-def plot_value_array(i, predictions_array, true_label):
-    predictions_array, true_label = predictions_array[i], true_label[i]
-    plt.grid(False)
-    plt.xticks(range(10))
-    plt.yticks([])
-    thisplot = plt.bar(range(10), predictions_array, color="#777777")
-    plt.ylim([0, 1])
-    predicted_label = np.argmax(predictions_array)
-
-    thisplot[predicted_label].set_color('red')
-    thisplot[true_label].set_color('blue')
-
-
-def run_training(train_images, train_labels, test_images, test_labels):
-
-    x_train_full = train_images
+    x_train = train_images
     x_test = test_images
 
-    y_train_full = train_labels
+    y_train = train_labels
     y_test = test_labels
 
-    x_train = x_train_full[:150000]
-    x_val = x_train_full[150000:180000]
-    y_train = y_train_full[:150000]
-    y_val = y_train_full[150000:180000]
+    x_val = val_images
+    y_val = val_labels
 
     model = tf.keras.models.Sequential([
-        tf.keras.layers.InputLayer(input_shape=(28, 28, 1)),
-        tf.keras.layers.BatchNormalization(),
-
-        tf.keras.layers.Conv2D(64, (5, 5), activation='relu'),
+        tf.keras.layers.Conv2D(32, (5, 5), activation='relu', padding='Same', input_shape=(28, 28, 1)),
+        tf.keras.layers.Conv2D(32, (5, 5), activation='relu', padding='Same'),
         tf.keras.layers.MaxPooling2D(2, 2),
         tf.keras.layers.Dropout(0.25),
-        tf.keras.layers.Conv2D(64, (5, 5), activation='relu'),
+
+        tf.keras.layers.Conv2D(64, (3, 3), activation='relu', padding='Same'),
+        tf.keras.layers.Conv2D(64, (3, 3), activation='relu', padding='Same'),
         tf.keras.layers.MaxPooling2D(2, 2),
+        tf.keras.layers.Dropout(0.25),
 
         tf.keras.layers.Flatten(),
-        tf.keras.layers.Dropout(0.25),
-        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(512, activation='relu'),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Dense(NUMBER_OF_CLASSES, activation='softmax')
     ])
 
     model.summary()
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
-    start_time = time.time()
     model.fit(x_train, y_train,
               validation_data=(x_val, y_val),
-              batch_size=384,
-              epochs=150
+              batch_size=BATCH_SIZE,
+              epochs=EPOCHS
               )
-    training_time = int(time.time() - start_time)
-
-    print('Training time [s]:', training_time)
 
     # model.evaluate(x_test, y_test, verbose=2)
 
-    # model.save("fashion_mnist_conv_net")
+    model.save("model.h5")
+
 

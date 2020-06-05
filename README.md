@@ -20,7 +20,8 @@ KNeighborsClassifier {"n_neighbors":5,"p":2,"weights":"uniform"}, accuracy: 0.85
 ### Results
 
 I tested the k-value on a limited set of 10,000 train images and 2,000 validation images
-and decided to go with k = 5 for the full-size test (actually half-size, because neither my laptop, nor Google Colab could handle it). 
+and decided to go with k = 5 for the full-size test (actually half-size, because neither my laptop, nor Google Colab could 
+handle it in this form). 
 The results obtained are as follows (accuracy):
 
 10k train/2k validation:
@@ -44,18 +45,24 @@ That corresponds to the official benchmark (0.851 accuracy when using a full set
 ## Better model - CNN
 
 For my go-to model I've chosen a convolutional neural network, which is also well suited for an image 
-classification task. I started with a simple structure of 2 convolution layers and one dense layer. The training 
-set was divided into a 50,000 training set and a 10,000 validation set. Inspired by a paper [] on a cnn used 
-for the original mnist dataset I tried a similar architecture (at first without augmentation) - 5 features on the 1st convolution, 50 on 2nd,
-100 hidden units. After 100 epochs of training the model achieved 99,5% accuracy on the training set, but only
-89% on the validation set. In fact the maximum accuracy (on validation set) was obtained just after 10 epochs
-and it didn't change much after. I had to change my approach to prevent overfitting, so I increased the number of parameters, 
-decreased training time and added dropout layers. Then i was performing tests in order to minimize the number of 
-parameters if they didn't increase accuracy on the validation set. The final architecture looks like this:
+classification task. Inspired by a paper [] on a cnn & elastic distortions used for the original mnist dataset I started with a similar simple 
+architecture (at first without augmentation) - 2 convolution layers and one dense layer. The training set was divided into
+a 50,000 training set and a 10,000 validation set. After 100 epochs of training the model achieved 99,5% accuracy on the training set, but only
+89% on the validation set. In fact the maximum (validation) accuracy was obtained just after 10 epochs
+and it didn't change much after. To prevent overfitting I increased the number of parameters, added more convolutions 
+and dropout layers. New model's accuracy was improved. Next thing to do was to augment the dataset, as described in the paper 
+mentioned earlier. I used elastic distortions from here [], which aren't as common as affine transformations (maybe
+because they are not implemented in tensorflow), but work really well. I also used random horizontal flips. The dataset 
+has been augmented 4 times, which gives 150,000 images to train on (the validation set wasn't augmented). Samples of images can be found below:
+
+[]
+
+From there I've been performing tests and tweaking the model. For example, I found that the Adamax optimizer performs better
+than RMSProp I've been using all the time. The final results are discussed below.
 
 ### Results
 
-THe results obtained for the network are better, than for KNN. Training time is significantly shorter as well.
+The results obtained for the network are much better, than for KNN. Training time is shorter as well.
 For the current version tests for the 10k train set tested on 2k test set give accuracy:
 
 - 0.915 on the training set
