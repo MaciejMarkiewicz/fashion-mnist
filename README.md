@@ -15,7 +15,7 @@ preprocessing/feature extraction apart from normalization,
 they are treated as 28x28 matrices and supplied to the distance function in this format.
 This model is similar to the model from the benchmark site:
 
-KNeighborsClassifier {"n_neighbors":5,"p":2,"weights":"uniform"}, accuracy: 0.851  
+> KNeighborsClassifier {"n_neighbors":5,"p":2,"weights":"uniform"}, accuracy: 0.851  
 
 ### Results
 
@@ -36,7 +36,8 @@ And for the 30k train/5k test:
 
 - 0.839 for k=5
 
-That corresponds to the official benchmark (0.851 accuracy when using a full set), so it seems to work just fine.
+That corresponds to the official benchmark - 0.851 accuracy when using a full set - and I believe it would get there
+with that number of training data, so it seems to work just fine.
 
 ## Better model - CNN
 
@@ -50,8 +51,8 @@ and it didn't change much after. To prevent overfitting I increased the number o
 and dropout layers. Next thing to do was to augment the dataset, as described in the paper 
 mentioned earlier. I used elastic distortions from [here](https://www.kaggle.com/babbler/mnist-data-augmentation-with-elastic-distortion). 
 They aren't as common as affine transformations (maybe because they are not implemented in tensorflow), but work really well. 
-I also used random horizontal flips. The dataset has been augmented 3 times, which gives 200,000 training images in total
-(the validation set wasn't augmented). The effect of the augmentation (and random horizontal flip I eventually didn't use) looks 
+I also tested random horizontal flips. The dataset has been augmented 3 times, which gives 200,000 training images in total
+(the validation set wasn't augmented). The effect of the augmentation (and the flip I eventually didn't use) looks 
 like this (original image is in the bottom right corner):
 
 ![Elastic distortions](images/elastic_dist.jpg)
@@ -61,14 +62,14 @@ than RMSProp I've been using all the time. The final results are discussed below
 
 ### Results
 
-The results obtained for the network are much better, than for KNN. Training time is shorter as well. Accuracy:
+The results obtained for the network are much better, than for KNN. Training time is shorter as well. I managed to achieve accuracy:
 
-- 0.915 on the training set
-- 0.893 on the validation set (last epoch)
-- ___ on the test set
+- 0.989 on the training set
+- 0.946 on the validation set (last epoch)
+- **0.946 on the test set**
 
-This is a better result than for all of the standard CNNs listed in the benchmark section of the Fashion-mnist repository.
-It shows, that dataset augmentation is indeed a vital part of creating a model when having a relatively small dataset. 
+This is a better result than for all of the standard CNNs listed in the benchmark section of the fashion-mnist repository.
+In my opinion it shows that dataset augmentation is indeed a vital part of training a model when having a relatively small dataset. 
 The model is very similar to other CNN models and this is the main difference between them.
 
 # Usage 
@@ -76,5 +77,5 @@ The model is very similar to other CNN models and this is the main difference be
 Everything can be run by running the main.py file. Tensorflow/Kreas, numpy and scipy
 are needed. I used Python 3.7 Anaconda distribution. The fashion-mnist set is included with tensorflow, 
 so no additional downloading is necessary. KNN model can't be downloaded, 
-as it requires specific test data. CNN model is available for download form the fashion_mnist_conv_net folder,
+as it requires specific test data. CNN model is available for download form the trained_model folder,
 in a .h5 Keras format.
