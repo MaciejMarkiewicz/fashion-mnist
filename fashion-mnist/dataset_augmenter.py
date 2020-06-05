@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.ndimage.filters import gaussian_filter
 from scipy.ndimage.interpolation import map_coordinates
 from tensorflow import keras
@@ -32,7 +31,6 @@ def data_generator():
         width_shift_range=0,
         height_shift_range=0,
         zoom_range=0.0,
-        horizontal_flip=True,
         preprocessing_function=lambda image: elastic_transform(image, alpha_range=8, sigma=3)
     )
 
@@ -49,7 +47,7 @@ def image_augmentation(image, datagen, number_of_augmentations):
             return images
 
 
-def preprocess_data(train_images, train_labels, test_images, test_labels):
+def preprocess_data(train_images, train_labels):
     datagen = data_generator()
 
     val_images = train_images[TRAIN_SET_SIZE:]
@@ -57,18 +55,12 @@ def preprocess_data(train_images, train_labels, test_images, test_labels):
 
     preprocessed = []
 
-    i = 0
     for image, label in zip(train_images[:TRAIN_SET_SIZE], train_labels[:TRAIN_SET_SIZE]):
         augmented_images = image_augmentation(image, datagen, NUMBER_OF_AUGMENTATIONS)
-        i += 1
+
         for aug_image in augmented_images:
             preprocessed.append((aug_image.reshape(28, 28, 1), label))
-            if i == 13:
-                plt.imshow(aug_image.reshape(28, 28))
-                plt.show()
-        if i == 13:
-            plt.imshow(image.reshape(28, 28))
-            plt.show()
+
         preprocessed.append((image.reshape(28, 28, 1), label))
 
     random.shuffle(preprocessed)
@@ -77,9 +69,7 @@ def preprocess_data(train_images, train_labels, test_images, test_labels):
     preprocessed_x, preprocessed_y = list(preprocessed[0]), list(preprocessed[1])
     preprocessed_x = np.array(preprocessed_x) / 255
 
-    test_images = (test_images / 255).reshape(len(test_images), 28, 28, 1)
     val_images = (val_images / 255).reshape(len(val_images), 28, 28, 1)
 
     return preprocessed_x, keras.utils.to_categorical(preprocessed_y), \
-            val_images, keras.utils.to_categorical(val_labels), \
-            test_images, keras.utils.to_categorical(test_labels),
+            val_images, keras.utils.to_categorical(val_labels),

@@ -27,13 +27,9 @@ The results obtained are as follows (accuracy):
 10k train/2k validation:
 
 - 0.793 for k=50
-
 - 0.822 for k=9
-
 - 0.823 for k=5
-
 - 0.820 for k=3
-
 - 0.808 for k=1
 
 And for the 30k train/5k test:
@@ -45,38 +41,40 @@ That corresponds to the official benchmark (0.851 accuracy when using a full set
 ## Better model - CNN
 
 For my go-to model I've chosen a convolutional neural network, which is also well suited for an image 
-classification task. Inspired by a paper [] on a cnn & elastic distortions used for the original mnist dataset I started with a similar simple 
-architecture (at first without augmentation) - 2 convolution layers and one dense layer. The training set was divided into
+classification task. Inspired by a [paper](https://www.cs.cmu.edu/~bhiksha/courses/deeplearning/Fall.2016/pdfs/Simard.pdf) 
+on a cnn & elastic distortions usage for the original mnist dataset I started with a similar simple 
+architecture (at first without distortions) - 2 convolution layers and one dense layer. The training set was divided into
 a 50,000 training set and a 10,000 validation set. After 100 epochs of training the model achieved 99,5% accuracy on the training set, but only
 89% on the validation set. In fact the maximum (validation) accuracy was obtained just after 10 epochs
-and it didn't change much after. To prevent overfitting I increased the number of parameters, added more convolutions 
-and dropout layers. New model's accuracy was improved. Next thing to do was to augment the dataset, as described in the paper 
-mentioned earlier. I used elastic distortions from here [], which aren't as common as affine transformations (maybe
-because they are not implemented in tensorflow), but work really well. I also used random horizontal flips. The dataset 
-has been augmented 4 times, which gives 150,000 images to train on (the validation set wasn't augmented). Samples of images can be found below:
+and it didn't change much after. To prevent overfitting I increased the number of parameters, added more convolutions, one dense layer
+and dropout layers. Next thing to do was to augment the dataset, as described in the paper 
+mentioned earlier. I used elastic distortions from [here](https://www.kaggle.com/babbler/mnist-data-augmentation-with-elastic-distortion). 
+They aren't as common as affine transformations (maybe because they are not implemented in tensorflow), but work really well. 
+I also used random horizontal flips. The dataset has been augmented 3 times, which gives 200,000 training images in total
+(the validation set wasn't augmented). The effect of the augmentation (and random horizontal flip I eventually didn't use) looks 
+like this (original image is in the bottom right corner):
 
-[]
+![Elastic distortions](images/elastic_dist.jpg)
 
 From there I've been performing tests and tweaking the model. For example, I found that the Adamax optimizer performs better
 than RMSProp I've been using all the time. The final results are discussed below.
 
 ### Results
 
-The results obtained for the network are much better, than for KNN. Training time is shorter as well.
-For the current version tests for the 10k train set tested on 2k test set give accuracy:
+The results obtained for the network are much better, than for KNN. Training time is shorter as well. Accuracy:
 
 - 0.915 on the training set
-- 0.893 on the test set
-
-And for the full test:
-
-- ___ on the training set
+- 0.893 on the validation set (last epoch)
 - ___ on the test set
+
+This is a better result than for all of the standard CNNs listed in the benchmark section of the Fashion-mnist repository.
+It shows, that dataset augmentation is indeed a vital part of creating a model when having a relatively small dataset. 
+The model is very similar to other CNN models and this is the main difference between them.
 
 # Usage 
 
-Everything can be run by running the main.py file. Tensorflow/Kreas, numpy and matplotlib libraries
+Everything can be run by running the main.py file. Tensorflow/Kreas, numpy and scipy
 are needed. I used Python 3.7 Anaconda distribution. The fashion-mnist set is included with tensorflow, 
 so no additional downloading is necessary. KNN model can't be downloaded, 
 as it requires specific test data. CNN model is available for download form the fashion_mnist_conv_net folder,
-in a SavedModel Keras format, and can be used easily in Keras as any other saved model.
+in a .h5 Keras format.
