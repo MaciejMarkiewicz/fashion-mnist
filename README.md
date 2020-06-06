@@ -75,7 +75,18 @@ The model is very similar to other CNN models and this is the main difference be
 # Usage 
 
 Everything can be run by running the main.py file. Tensorflow/Kreas, numpy and scipy
-are needed. I used Python 3.7 Anaconda distribution. The fashion-mnist set is included with tensorflow, 
-so no additional downloading is necessary. KNN model can't be downloaded, 
-as it requires specific test data. CNN model is available for download form the trained_model folder,
-in a .h5 Keras format.
+are needed. I used Python 3.7 Anaconda distribution. The fashion-mnist set is included with Keras, 
+so no additional downloading is necessary. KNN model can't be downloaded, but CNN model is available for download 
+form the trained_model folder, in a .h5 Keras format. It can be used with code like this:
+```python
+from tensoflow import keras
+
+(train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+
+test_images = (test_images / 255).reshape(len(test_images), 28, 28, 1)
+test_labels = keras.utils.to_categorical(test_labels)
+
+model = keras.models.load_model('trained_model/model.h5')
+model.summary()
+model.evaluate(test_images, test_labels, verbose=2)
+```
