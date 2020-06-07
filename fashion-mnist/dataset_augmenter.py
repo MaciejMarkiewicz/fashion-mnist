@@ -72,4 +72,4 @@ def preprocess_data(train_images, train_labels):
     val_images = (val_images / 255).reshape(len(val_images), 28, 28, 1)
 
     return preprocessed_x, keras.utils.to_categorical(preprocessed_y), \
-            val_images, keras.utils.to_categorical(val_labels),
+           val_images, keras.utils.to_categorical(val_labels)
