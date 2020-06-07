@@ -70,7 +70,7 @@ I merged the train and validation set back and used it for the final training. T
 - **0.947 on the test set** (trained on full training+validation set)
 
 This is a better result than for all of the standard CNNs listed in the benchmark section of the fashion-mnist repository -
-they range from 0.876 to 0.939 and there is one hybrid cnn-dense net with 0.947 accuracy.
+they range from 0.876 to 0.934 and there is one hybrid cnn-dense net with 0.947 accuracy.
 I believe it shows that dataset augmentation is a vital part of training a model when having a relatively small dataset. 
 The model is very similar to other CNN models and this is the main difference between them.
 
