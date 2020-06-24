@@ -1,18 +1,16 @@
 # Fashion-mnist ML models
 
-This repository contains a couple of ML models trained for image classification on the fashion-mnist dataset.
+This repository contains two ML models trained for image classification on the fashion-mnist dataset.
 
 # Methods 
 
-## Testing previous models - KNN
+## First take - KNN
 
-Choosing from the models implemented during previous classes I've decided to use
-a KNN classifier, which should perform well on an image classification task.
-It can be found in the knn.py file. I had to modify the distance function so that it fits
-new data - it's a simple Euclidean distance function, the weights are uniform. There's no image 
-preprocessing/feature extraction apart from normalization, 
+I've decided to use a KNN classifier, which should perform well on an image classification task.
+It can be found in the knn.py file. The distance function is a simple Euclidean distance, the weights are uniform. 
+There's no image preprocessing/feature extraction apart from normalization, 
 they are treated as 28x28 matrices and supplied to the distance function in this format.
-This model is similar to the model from the benchmark site:
+This model is similar to the model from the fashion-mnist benchmark site (scikit-learn model):
 
 > KNeighborsClassifier {"n_neighbors":5,"p":2,"weights":"uniform"}, accuracy: 0.851  
 
